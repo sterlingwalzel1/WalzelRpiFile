@@ -1,5 +1,4 @@
 import RPi.GPIO as GPIO
-import time
 import sys
 
 GPIO.setmode(GPIO.BOARD)
@@ -13,19 +12,13 @@ flashlight = 'LIGHT_OFF'
 
 GPIO.setup(BUTTON_0_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 GPIO.setup(LED_O_PIN, GPIO.OUT)
-current_state = None
-prev_state = GPIO.LOW
 
-try: 
+
+try:
     while(True):
-        current_state = GPIO.input(BUTTON_0_PIN)
-        if(current_state == GPIO.HIGH):
-            if(prev_state == GPIO.LOW):
-                flashlight = not flashlight
-                GPIO.output(LED_O_PIN, flashlight)
-
-        prev_state = current_state
-        time.sleep(0.01)
+        GPIO.wait_for_edge(BUTTON_0_PIN, GPIO.RISING, bouncetime = 10)
+        flashlight = not flashlight
+        GPIO.output(LED_O_PIN, flashlight)
 
 
 except KeyboardInterrupt:
@@ -33,5 +26,3 @@ except KeyboardInterrupt:
     GPIO.output(LED_O_PIN, GPIO.LOW)
     GPIO.cleanup()
     sys.exit()
-
-
