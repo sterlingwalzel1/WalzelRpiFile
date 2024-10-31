@@ -21,6 +21,6 @@ try:
             factor = -1
         time.sleep(.01)
 except KeyboardInterrupt:
-print('Got Keyboard Interrupt. Cleaning up and exiting')
-pwm.set_duty_cycle(0.0)
-sys.exit()
+    print('Got Keyboard Interrupt. Cleaning up and exiting')
+    pwm.set_duty_cycle(0.0)
+    sys.exit()
