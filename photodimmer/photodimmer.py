@@ -49,7 +49,7 @@ try:
 
         led.set_duty_cycle(pwm_value)
         time.sleep(.01)
-
+ 
 except KeyboardInterrupt:
     print('Got Keyboard Interrupt. Cleaning up and exiting')
     led.set_duty_cycle(0)
