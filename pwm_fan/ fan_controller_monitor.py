@@ -31,7 +31,7 @@ def callback(TACH_PIN):
         period /= 10
         freq = 1 / period
         rpm = freq * 60 / 2
-        file.write(str(rpm) + "\n")   
+        file.write(str(freq) + "\n")   
         period = 0
         print('s')
         
