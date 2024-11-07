@@ -24,17 +24,16 @@ def callback(TACH_PIN):
     global period 
     global count
     global prev
-    period += cur - prev
+    period += (cur - prev) / 1000000000
     count += 1
 
     if count % 10 == 0:
         period /= 10
         freq = 1 / period
         rpm = freq * 60 / 2
-        file.write(str(freq) + "\n")   
-        period = 0
-        print('s')
-        
+        print(rpm)
+        file.write(str(rpm) + "\n")   
+        period = 0        
 
     prev = cur
 
