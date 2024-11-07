@@ -11,7 +11,7 @@ import utilities
 pwm = utilities.HW_PWM(25000)
 pwm.set_duty_cycle(100.0)
 
-file = open("rpm_value_file.txt", "a") 
+file = open("rpm_value_file.txt", "w") 
 TACH_PIN = 16
 GPIO.setup(TACH_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 count = 0
@@ -31,7 +31,6 @@ def callback(TACH_PIN):
         period /= 10
         freq = 1 / period
         rpm = freq * 60 / 2
-        print(rpm)
         file.write(str(rpm) + "\n")   
         period = 0        
 
