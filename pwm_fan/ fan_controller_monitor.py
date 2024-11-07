@@ -3,6 +3,8 @@ import time
 import sys
 import os
 
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
 sys.path.insert(0, '../utilities')
 import utilities
 
@@ -11,23 +13,29 @@ pwm.set_duty_cycle(100.0)
 
 file = open("rpm_value_file.txt", "a") 
 TACH_PIN = 16
+GPIO.setup(TACH_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 count = 0
+period = 0
 prev = time.time_ns()
 
 
 def callback(TACH_PIN):
     cur = time.time_ns()
-    global period += cur - prev
-    global count += 1
+    global period 
+    global count
+    global prev
+    period += cur - prev
+    count += 1
 
-     if count % 10 == 0:
+    if count % 10 == 0:
         period /= 10
         freq = period^-1
         rpm = freq * 60 / 2
         file.write(string(rpm) + "\n")   
+        period = 0
         
 
-    global prev = cur
+    prev = cur
 
 GPIO.add_event_detect(TACH_PIN, GPIO.RISING, callback = callback)
 
