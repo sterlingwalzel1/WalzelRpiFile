@@ -44,7 +44,8 @@ sub_topic_name = partner_name + '/command_center/desired_speed'
 
 #intilaize MQTT
 cilent = mqtt.Client()
-client.on_connect = on_connectclient.on_message = on_message
+client.on_connect = on_connect
+client.on_message = on_message
 client.connect("broker.emqx.io", 1883, 60)
 client.loop_start()
 
