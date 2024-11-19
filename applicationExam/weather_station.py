@@ -13,24 +13,24 @@ GPIO.setup(BUTTON_0_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 sys.path.insert(0, '../utilities')
 import utilities
 
+
+prev_activity = "BONFIRE"
 # this callback runs once when the client connects with the broker
 def on_connect(client, userdata, flags, rc):
     print(f"Connected with result code {rc}")
-    print('Subscribing to topic ', sub_topic_name)
-    client.subscribe(sub_topic_name)
+    #print('Subscribing to topic ', sub_topic_name)
+    #client.subscribe(sub_topic_name)
 
 # this callback runs whenever a message is received
 def on_message(client, userdata, msg):
-    active = (float(msg.payload))
-    print('Activity = ', active)
+    act = (float(msg.payload))
+    print('Activity = ', act)
     
 # Read command line arguments and set the publish and subscribe topic names
 # based on the command line arguments
 numArgs = len(sys.argv)
 my_name = sys.argv[1]
-pub_topic_name = my_name + '/home_base/activity'
-partner_name = sys.argv[2]
-sub_topic_name = partner_name + '/weather_station/activity'
+pub_topic_name = my_name + '/weather_station/actnum'
 
 # Initialize MQTT and connects to the broker
 client = mqtt.Client()
@@ -82,16 +82,28 @@ try:
         #SWITCH CASE TO FIGURE OUT WHAT ACTIVITY
         if activity == "STAY_HOME":
             print('Stay home, dude!')
+            actnum = 0
         elif activity == 'BONFIRE':
             print('Bonfire, dude!')
+            actnum = 1
         elif activity == 'SURFS_UP':
             print('Surf\'s up, dude!')
+            actnum = 2
         elif activity == 'TOO_DARK_TO_SURF':
             print('Too dark to surf, dude!')
+            actnum = 3
         elif activity == 'BAG_RAYS':
             print('Bag some rays, dude!')
+            actnum = 4
         elif activity == 'TOO_DARK_TO_BAG_RAYS':
             print('Too dark to bag Rays, dude!')
+            actnum = 5
+
+
+        if prev_activity != activity:
+            client.publish(pub_topic_name, payload=actnum, qos=0, retain=False)
+        
+        prev_activity = activity
 
         print(temp, photo_volt)
         time.sleep(1)
