@@ -23,33 +23,12 @@ try:
     pwm_value = 0.0
     factor = 1
     while True:
-        print('Cover the photosensor and press the push button')
-        GPIO.wait_for_edge(BUTTON_0_PIN, GPIO.RISING, bouncetime = 10)
-        to_send = [0b00000001, 0b00100000, 0b00000000] #difference between channel 2 and 3
-        value = spi.xfer(to_send)
-        max_val = (value[1] * 256) + value[2]
-        print('Max value = ' + str(max_val))
-        time.sleep(.1)
-
-        print('Shine a flashlight on the photosensor and press the push button')
-        GPIO.wait_for_edge(BUTTON_0_PIN, GPIO.RISING, bouncetime = 10)
-        to_send = [0b00000001, 0b10000000, 0b00000000]
-        value = spi.xfer(to_send)
-        min_val = (value[1] * 256) + value[2]
-        print('Min value = ' + str(min_val))
-        time.sleep(.1)
-         
-        break
-
-    while True:
         to_send = [0b00000001, 0b10000000, 0b00000000]
         value = spi.xfer(to_send)
         adc_value = (value[1] * 256) + value[2]
+        print(adc_value)
         pwm_value = (min_val + adc_value) / ((max_val-min_val)/100)
-        time.sleep(.1)
-
-        led.set_duty_cycle(pwm_value)
-        time.sleep(.01) 
+        time.sleep(1)
   
 except KeyboardInterrupt:
     print('Got Keyboard Interrupt. Cleaning up and exiting')
