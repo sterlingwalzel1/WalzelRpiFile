@@ -3,6 +3,7 @@ import time
 import sys
 import os
 import spidev
+import paho.mqtt.client as mqtt
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
@@ -11,7 +12,32 @@ GPIO.setup(BUTTON_0_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 sys.path.insert(0, '../utilities')
 import utilities
-led = utilities.HW_PWM(2000)
+
+# this callback runs once when the client connects with the broker
+def on_connect(client, userdata, flags, rc):
+    print(f"Connected with result code {rc}")
+    print('Subscribing to topic ', sub_topic_name)
+    client.subscribe(sub_topic_name)
+
+# this callback runs whenever a message is received
+def on_message(client, userdata, msg):
+    active = (float(msg.payload))
+    print('Activity = ', active)
+    
+# Read command line arguments and set the publish and subscribe topic names
+# based on the command line arguments
+numArgs = len(sys.argv)
+my_name = sys.argv[1]
+pub_topic_name = my_name + '/home_base/activity'
+partner_name = sys.argv[2]
+sub_topic_name = partner_name + '/weather_station/activity'
+
+# Initialize MQTT and connects to the broker
+client = mqtt.Client()
+client.on_connect = on_connect
+client.on_message = on_message
+client.connect("broker.emqx.io", 1883, 60)
+client.loop_start()
 
 spi = spidev.SpiDev()
 spi.open(0, 0)
